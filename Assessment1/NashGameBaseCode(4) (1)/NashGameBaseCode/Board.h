@@ -66,6 +66,9 @@ public:
 		return turn;
 	}
 
+    // Assessment 1 - task 1
+    bool isBoardFull();
+
 	bool validInput(int, int);
 
 	bool addMove(int playerType, int x, int y);
@@ -77,6 +80,18 @@ public:
 
 	void printBoard();
 };
+
+// Assessment 1 - task 1
+bool Board::isBoardFull() {
+  	for (int row = 0; row < boardSize; row++) {
+	    for (int col = 0; col < boardSize; col++) {
+			if (grid[row][col] == 0) {
+			    return false;
+			}
+		}
+    }
+    return true;
+}
 
 bool Board::validInput(int x, int y) {
 	if (x < 0 || y < 0 || x >= boardSize || y >= boardSize) {
