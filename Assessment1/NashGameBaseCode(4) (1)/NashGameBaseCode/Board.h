@@ -8,11 +8,25 @@
 #ifndef BOARD_H_
 #define BOARD_H_
 
+#include <iostream>
+#include <vector>
+#include <stack>
+
+using namespace std;
+
+struct Cell {
+public:
+	int x;
+	int y;
+	Cell(int x, int y) : x(x), y(y) {}
+};
+
 class Board {
 private:
 	int boardSize;
 	int turn;
 	int **grid;
+	vector<Cell> emptyCells;
 public:
 	Board(int bs) {
 		boardSize = bs;
@@ -25,6 +39,13 @@ public:
 				grid[i][j] = 0;
 			}
 		turn = 1;
+
+		// initialize empty Cells
+		for (int i = 0; i < boardSize; i++) {
+			for (int j = 0; j < boardSize; j++) {
+				emptyCells.push_back(Cell(i, j));
+			}
+		}
 	}
 
 	virtual ~Board() {
@@ -73,6 +94,8 @@ public:
 
 	bool addMove(int playerType, int x, int y);
 
+	void getRandomMove(int &x, int &y);
+
 	int checkWinningStatus(int playerType) {
 		//To be implemented
 		return 0;
@@ -80,6 +103,13 @@ public:
 
 	void printBoard();
 };
+
+void Board::getRandomMove(int &x, int &y) {
+
+	int random = rand() % emptyCells.size();
+	x = emptyCells[random].x;
+	y = emptyCells[random].y;
+}
 
 // Assessment 1 - task 1
 bool Board::isBoardFull() {
