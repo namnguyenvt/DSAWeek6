@@ -19,10 +19,10 @@ public:
 		player[1] = p2;
 	}
 
-	void play(string typePlayer);
+	void play(int typePlayer);
 };
 
-void NashGame::play(string typePlayer) {
+void NashGame::play(int typePlayer) {
 	int won = 0;
 	// Task 1
 	board->printBoard();
@@ -57,7 +57,7 @@ void NashGame::play(string typePlayer) {
 		won = board->checkWinningStatus(playerType);
         if(won == playerType)
         	cout << player[playerIndex]->getPlayerName() << " player wins!" << endl;
-		if (typePlayer == "Random") {
+		if (typePlayer == 2) {
 			if (won) {
 				return;
 			}
