@@ -19,13 +19,13 @@ public:
     }
     bool getMove(Board*, int&, int&);
 
-    void getRandomMove(int &x, int &y);
+    void getRandomMove(Board *board, int &x, int &y);
 };
 
-void RandomPlayer::getRandomMove(int &x, int &y) {
-    int random = rand() % Board::emptyCells.size();
-    x = emptyCells[random].x;
-    y = emptyCells[random].y;
+void RandomPlayer::getRandomMove(Board *board, int &x, int &y) {
+    int random = rand() % board->getEmptyCells().size();
+    x = board->getEmptyCells()[random].x;
+    y = board->getEmptyCells()[random].y;
 }
 
 bool RandomPlayer::getMove(Board *board, int &x, int &y) {
@@ -34,7 +34,7 @@ bool RandomPlayer::getMove(Board *board, int &x, int &y) {
 
     while (!flag) {
 
-        getRandomMove(x, y);
+        getRandomMove(board, x, y);
         flag = board->validInput(x, y);
         if (flag == false)
             cout << "Invalid input! Please input again." << endl;

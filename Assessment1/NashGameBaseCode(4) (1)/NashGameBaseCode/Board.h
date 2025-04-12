@@ -28,6 +28,7 @@ private:
 	int **grid;
 	vector<Cell> emptyCells;
 public:
+
 	Board(int bs) {
 		boardSize = bs;
 		grid = new int*[boardSize];
@@ -47,6 +48,7 @@ public:
 			}
 		}
 	}
+
 
 	virtual ~Board() {
 
@@ -87,6 +89,8 @@ public:
 		return turn;
 	}
 
+
+
     // Assessment 1 - task 1
     bool isBoardFull();
 
@@ -95,43 +99,146 @@ public:
 	bool addMove(int playerType, int &x, int &y);
 
 	bool dfs(bool** visited, int playerType, int x, int y);
-	// Assessment 1 - task 3
-	int checkWinningStatus(int playerType) {
-		//To be implemented
-		// Check col for Black Player Win
-		if (playerType == 1) {
-			for (int col = 0; col < boardSize; col++) {
 
-
-				return 0;
-			}
-		}
-	}
+	vector<Cell> getEmptyCells();
 
 	void printBoard();
+
+	stack<vector<int>> checkNeighbours(int player, int x, int y);
+
+	// Assessment 1 - task 3
+	int checkWinningStatus(int playerType);
+
 };
 
-bool Board::dfs(bool** visited, int playerType, int x, int y) {
-	if (playerType == 1 && x == boardSize - 1) {
-		return true;
-	}
-	if (playerType == -1 && y == boardSize - 1) {
-		return true;
-	}
+// Task 3.3
+stack<vector<int>> Board::checkNeighbours(int player, int x, int y) {
+	stack<vector<int>> neighbours;
 
-	visited[x][y] = true;
+	// Hexagonal neighbors (down-left, down-right, left, right, up-left, up-right)
+	int dx[] = {1, 1, 0, 0, -1, -1};
+	int dy[] = {-1, 0, -1, 1, 0, 1};
 
-	for (int i = 0; i < boardSize; ++i) {
-		int nx = x + x[i];
-		int ny = y + y[i];
+	for (int i = 0; i < 6; i++) {
+		int nx = x + dx[i];
+		int ny = y + dy[i];
 
-		if (nx >= 0 && ny >= 0 && nx < boardSize && ny < boardSize && !visited[nx][ny] && grid[nx][ny] == playerType) {
-			if (dfs(visited, boardSize, nx, ny, playerType)) {
-				return true;
-			}
+		if (nx >= 0 && nx < boardSize && ny >= 0 && ny < boardSize && grid[nx][ny] == player) {
+			int index = nx * boardSize + ny;  // Convert (x, y) to 1D index
+			neighbours.emplace(nx, ny);
 		}
 	}
+
+	return neighbours;
 }
+
+int Board::checkWinningStatus(int playerType) {
+		// To be implemented
+		//Check col for White Player Win
+		stack<vector<int>> stacktrackingStack;
+		stack<vector<int>> visitedList;
+		if (playerType == -1) {
+			for (int i = 0; i < boardSize; i++) {
+				if (grid[i][0] == playerType) {
+					stacktrackingStack.emplace(i, 0);
+				}
+			}
+			while (!stacktrackingStack.empty()) {
+				vector<int> trackingCell = stacktrackingStack.top();
+				stacktrackingStack.pop();
+				visitedList.push(trackingCell);
+				cout << "White" << endl;
+				if (trackingCell[0] == boardSize - 1) {
+					return playerType;
+				}
+				cout << "White" << endl;
+				stack<vector<int> > neighbours = checkNeighbours(playerType, trackingCell[0], trackingCell[1]);
+				while (!neighbours.empty()) {
+					vector<int> neighbourCell = neighbours.top();
+					neighbours.pop();
+					bool checkExist = false;
+					stack<vector<int>> tempVisitList = visitedList;
+					while (!tempVisitList.empty()) {
+						if (tempVisitList.top() == neighbourCell) {
+							checkExist = true;
+						}
+						tempVisitList.pop();
+					}
+					if (checkExist) {
+						continue;
+					} else {
+						stacktrackingStack.push(neighbourCell);
+					}
+				}
+			}
+
+			while (!stacktrackingStack.empty()) {
+				stacktrackingStack.pop(); // removes one element at a time
+			}
+		} else { // Black
+			for (int i = 0; i < boardSize; i++) {
+				if (grid[0][i] == playerType) {
+					stacktrackingStack.emplace(0, i);
+				}
+			}
+
+			while (!stacktrackingStack.empty()) {
+				vector<int> trackingCell = stacktrackingStack.top();
+				visitedList.push(trackingCell);
+				cout << "Black: " << trackingCell[0] << endl;
+				if (trackingCell.at(1) == boardSize - 1) {
+					return playerType;
+				}
+				cout << "Black" << endl;
+				stack<vector<int> > neighbours = checkNeighbours(playerType, trackingCell[0], trackingCell[1]);
+				while (!neighbours.empty()) {
+					vector<int> neighbourCell = neighbours.top();
+					neighbours.pop();
+					bool checkExist = false;
+					stack<vector<int>> tempVisitList = visitedList;
+					while (!tempVisitList.empty()) {
+						if (tempVisitList.top() == neighbourCell) {
+							checkExist = true;
+						}
+						tempVisitList.pop();
+					}
+					if (checkExist) {
+						continue;
+					} else {
+						stacktrackingStack.push(neighbourCell);
+					}
+					stacktrackingStack.pop();
+				}
+			}
+
+			while (!stacktrackingStack.empty()) {
+				stacktrackingStack.pop(); // removes one element at a time
+			}
+		}
+		return 0;
+	}
+
+// bool Board::dfs(bool** visited, int playerType, int x, int y) {
+// 	if (playerType == 1 && x == boardSize - 1) {
+// 		return true;
+// 	}
+// 	if (playerType == -1 && y == boardSize - 1) {
+// 		return true;
+// 	}
+//
+// 	visited[x][y] = true;
+//
+// 	for (int i = 0; i < boardSize; ++i) {
+// 		int nx = x + x[i];
+// 		int ny = y + y[i];
+//
+// 		if (nx >= 0 && ny >= 0 && nx < boardSize && ny < boardSize && !visited[nx][ny] && grid[nx][ny] == playerType) {
+// 			if (dfs(visited, boardSize, nx, ny, playerType)) {
+// 				return true;
+// 			}
+// 		}
+// 	}
+// }
 
 
 // Assessment 1 - task 1
@@ -160,7 +267,7 @@ bool Board::validInput(int x, int y) {
 	return true;
 }
 
-bool Board::addMove(int playerType, int x, int y) {
+bool Board::addMove(int playerType, int &x, int &y) {
 
 	if (playerType != turn) {
 		cout << "It is not the player's turn!" << endl;
@@ -176,6 +283,10 @@ bool Board::addMove(int playerType, int x, int y) {
 
 	turn = -1 * turn;
 	return true;
+}
+
+vector<Cell> Board::getEmptyCells() {
+	return emptyCells;
 }
 
 void Board::printBoard() {

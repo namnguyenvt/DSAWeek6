@@ -87,8 +87,10 @@ void NashGame::play(int typePlayer) {
 
 			board->printBoard();
 			won = board->checkWinningStatus(playerType);
+			cout << "Player Win:" << won << endl;
 			if(won == playerType)
 				cout << player[playerIndex]->getPlayerName() << " player wins!" << endl;
+
 		}
 	}
 }
