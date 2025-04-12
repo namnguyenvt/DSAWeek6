@@ -7,6 +7,9 @@
 
 #include <cstdlib>  // For rand() and srand()
 #include <ctime>    // For time()
+#include <iostream>
+#include <vector>
+#include "Board.h"
 using namespace std;
 
 class RandomPlayer: public Player {
@@ -16,8 +19,14 @@ public:
     }
     bool getMove(Board*, int&, int&);
 
-    void getRandomMove(int player);
+    void getRandomMove(int &x, int &y);
 };
+
+void RandomPlayer::getRandomMove(int &x, int &y) {
+    int random = rand() % Board::emptyCells.size();
+    x = emptyCells[random].x;
+    y = emptyCells[random].y;
+}
 
 bool RandomPlayer::getMove(Board *board, int &x, int &y) {
     bool flag = false;
@@ -25,7 +34,7 @@ bool RandomPlayer::getMove(Board *board, int &x, int &y) {
 
     while (!flag) {
 
-        board->getRandomMove(x, y);
+        getRandomMove(x, y);
         flag = board->validInput(x, y);
         if (flag == false)
             cout << "Invalid input! Please input again." << endl;

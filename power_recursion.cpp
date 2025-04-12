@@ -5,18 +5,21 @@
 #include <iostream>
 using namespace std;
 
-int POWER_RECURSION(int x, int y) {
+double POWER_RECURSION(int x, int y) {
   if (y == 0) {
     return 1;
-  } else if (y == 1) {
+  }
+  if (y == 1) {
     return x;
-  } else {
+  }
+  if (y > 1) {
     return x * POWER_RECURSION(x, y - 1);
   }
+  return 1.0 / POWER_RECURSION(x, -y);
 }
 
 int main() {
-  int integer, exponent, result;
+  int integer, exponent;
 
   cout << "Enter the integer: ";
   cin >> integer;
@@ -24,7 +27,7 @@ int main() {
   cout << "Enter the exponent: ";
   cin >> exponent;
 
-  result = POWER_RECURSION(integer, exponent);
-  cout << "Result: " << result;
+  cout << "The result is: " << POWER_RECURSION(integer, exponent) << endl;
+
   return 0;
 }

@@ -92,24 +92,47 @@ public:
 
 	bool validInput(int, int);
 
-	bool addMove(int playerType, int x, int y);
+	bool addMove(int playerType, int &x, int &y);
 
-	void getRandomMove(int &x, int &y);
-
+	bool dfs(bool** visited, int playerType, int x, int y);
+	// Assessment 1 - task 3
 	int checkWinningStatus(int playerType) {
 		//To be implemented
-		return 0;
+		// Check col for Black Player Win
+		if (playerType == 1) {
+			for (int col = 0; col < boardSize; col++) {
+
+
+				return 0;
+			}
+		}
 	}
 
 	void printBoard();
 };
 
-void Board::getRandomMove(int &x, int &y) {
+bool Board::dfs(bool** visited, int playerType, int x, int y) {
+	if (playerType == 1 && x == boardSize - 1) {
+		return true;
+	}
+	if (playerType == -1 && y == boardSize - 1) {
+		return true;
+	}
 
-	int random = rand() % emptyCells.size();
-	x = emptyCells[random].x;
-	y = emptyCells[random].y;
+	visited[x][y] = true;
+
+	for (int i = 0; i < boardSize; ++i) {
+		int nx = x + x[i];
+		int ny = y + y[i];
+
+		if (nx >= 0 && ny >= 0 && nx < boardSize && ny < boardSize && !visited[nx][ny] && grid[nx][ny] == playerType) {
+			if (dfs(visited, boardSize, nx, ny, playerType)) {
+				return true;
+			}
+		}
+	}
 }
+
 
 // Assessment 1 - task 1
 bool Board::isBoardFull() {
