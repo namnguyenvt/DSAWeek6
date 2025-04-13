@@ -124,8 +124,7 @@ stack<vector<int>> Board::checkNeighbours(int player, int x, int y) {
 		int ny = y + dy[i];
 
 		if (nx >= 0 && nx < boardSize && ny >= 0 && ny < boardSize && grid[nx][ny] == player) {
-			int index = nx * boardSize + ny;  // Convert (x, y) to 1D index
-			neighbours.emplace(nx, ny);
+			neighbours.push(vector{nx, ny});
 		}
 	}
 
@@ -137,21 +136,28 @@ int Board::checkWinningStatus(int playerType) {
 		//Check col for White Player Win
 		stack<vector<int>> stacktrackingStack;
 		stack<vector<int>> visitedList;
+		//White
 		if (playerType == -1) {
 			for (int i = 0; i < boardSize; i++) {
 				if (grid[i][0] == playerType) {
-					stacktrackingStack.emplace(i, 0);
+					stacktrackingStack.push(vector{i, 0});
 				}
 			}
+
 			while (!stacktrackingStack.empty()) {
 				vector<int> trackingCell = stacktrackingStack.top();
 				stacktrackingStack.pop();
 				visitedList.push(trackingCell);
-				cout << "White" << endl;
-				if (trackingCell[0] == boardSize - 1) {
+
+				// Test
+				cout << "Tracking Cell size: " << trackingCell.size() << endl;
+				cout << "trackingCell values: ";
+				for (int v : trackingCell) cout << v << " ";
+				cout << endl;
+
+				if (trackingCell[1] == boardSize - 1) {
 					return playerType;
 				}
-				cout << "White" << endl;
 				stack<vector<int> > neighbours = checkNeighbours(playerType, trackingCell[0], trackingCell[1]);
 				while (!neighbours.empty()) {
 					vector<int> neighbourCell = neighbours.top();
@@ -178,22 +184,33 @@ int Board::checkWinningStatus(int playerType) {
 		} else { // Black
 			for (int i = 0; i < boardSize; i++) {
 				if (grid[0][i] == playerType) {
-					stacktrackingStack.emplace(0, i);
+					stacktrackingStack.push(vector{0, i});
 				}
 			}
 
 			while (!stacktrackingStack.empty()) {
 				vector<int> trackingCell = stacktrackingStack.top();
+				stacktrackingStack.pop();
 				visitedList.push(trackingCell);
-				cout << "Black: " << trackingCell[0] << endl;
-				if (trackingCell.at(1) == boardSize - 1) {
+
+				// Test
+				cout << "Tracking Cell size: " << trackingCell.size() << endl;
+				cout << "trackingCell values: ";
+				for (int v : trackingCell) cout << v << " ";
+				cout << endl;
+
+				if (trackingCell[0] == boardSize - 1) {
 					return playerType;
 				}
-				cout << "Black" << endl;
 				stack<vector<int> > neighbours = checkNeighbours(playerType, trackingCell[0], trackingCell[1]);
+
 				while (!neighbours.empty()) {
 					vector<int> neighbourCell = neighbours.top();
 					neighbours.pop();
+					cout << "Neighbour Cell size: " << neighbourCell.size() << endl;
+					cout << "Neighbour values: ";
+					for (int v : neighbourCell) cout << v << " ";
+					cout << endl;
 					bool checkExist = false;
 					stack<vector<int>> tempVisitList = visitedList;
 					while (!tempVisitList.empty()) {
@@ -207,7 +224,6 @@ int Board::checkWinningStatus(int playerType) {
 					} else {
 						stacktrackingStack.push(neighbourCell);
 					}
-					stacktrackingStack.pop();
 				}
 			}
 
@@ -215,6 +231,9 @@ int Board::checkWinningStatus(int playerType) {
 				stacktrackingStack.pop(); // removes one element at a time
 			}
 		}
+	while (!visitedList.empty()) {
+		visitedList.pop(); // removes one element at a time
+	}
 		return 0;
 	}
 
