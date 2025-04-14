@@ -6,11 +6,8 @@
 #define SIMPLEMINDPLAYER_H_
 
 #include <iostream>
-#include <vector>
 #include <queue>
 #include "Board.h"
-#include "algorithm"
-#include "cmath"
 
 using namespace std;
 
@@ -18,74 +15,106 @@ struct Node {
     int x;
     int y;
     double heuristic;
-    Node(int x =-1, int y =-1, double heuristic = 0):x(x), y(y), heuristic(heuristic){}
+    Node(int xx =-1, int yy =-1, double hh = 0):x(xx), y(yy), heuristic(hh){}
 
     bool operator<(const Node& c) const {
         return heuristic < c.heuristic;
     }
+
+    bool operator==(const Node& c) {
+        return (x == c.x && y == c.y);
+    }
 };
 
 class SimpleMindPlayer: public Player {
-private:
-    double heuristicCost;
 public:
     SimpleMindPlayer(int t, string name = "SimpleMindBot") :
             Player(t, name) {
     }
 
-    vector<Node> getNode();
-
     bool getMove(Board*, int&, int&);
 
-    int estimatedPathCost(Board *board, Node& startNode, int playerType);
+    double heuristic(Board *board, int playerType);
 
-    int heuristic(int startX, int startY, int goalX, int goalY);
-
-    void getBestMove(Board *board, int &x, int &y);
+    void getBestMove(Board *board, int &x, int &y, int playerType);
 };
 
-int SimpleMindPlayer::heuristic(int startX, int startY, int goalX, int goalY) {
-    return (abs(startX - goalX) + abs(startX + startY - goalX - goalY) + abs(startY - goalY)) / 2;
-}
-
 // Best-First Search
-int SimpleMindPlayer::estimatedPathCost(Board *board, Node& startNode, int playerType) {
-    int boardSize = board->getBoardSize();
-    priority_queue<vector<Node>> trackingPriorityQueue;
-    priority_queue<vector<Node>> visitedList;
+void SimpleMindPlayer::getBestMove(Board *board, int& x, int& y, int playerType) {
+    priority_queue<Node> moves;
 
-    // White
+    // White Player
     if (playerType == -1) {
-        for (int goalX = 0; goalX < boardSize; goalX++) {
-            heuristicCost = heuristic(startNode.x, startNode.y, goalX, boardSize - 1);
-            trackingPriorityQueue.push({goalX, boardSize - 1, int(heuristicCost)});
+        for (int i = 0; i < board->getBoardSize(); i++) {
+            for (int j = 0; j < board->getBoardSize(); j++) {
+                Board tempBoard(*board);
+                if (tempBoard.validInput(i, j)) {
+                    tempBoard.addMove(playerType, i, j);
+                    Node c(i, j, heuristic(board, playerType));
+                    moves.push(c);
+                }
+            }
         }
 
-        while (!trackingPriorityQueue.empty()) {
-            vector<Node> trackingNodes = {startNode.x, startNode.y};
-            trackingNodes = trackingPriorityQueue.top();
-            trackingPriorityQueue.pop();
-            visitedList.push(trackingNodes);
+        if (moves.size() > 0) {
+            x = moves.top().x;
+            y = moves.top().y;
+        } else {
+            cout << "Cannot find the new replacement";
+        }
 
-            // Test
-            cout << "TrackingNode size: " << trackingNodes.size() << endl;
-            cout << "trackingNode values: ";
-            for (Node& v : trackingNodes) {
-                cout << v.x << " " << v.y;
+        cout << "Heuristic = " << moves.top().heuristic << " at (" << (x + 1) << "," << (y + 1) << ")" << endl;
+    } else {
+        for (int i = 0; i < board->getBoardSize(); i++) {
+            for (int j = 0; j < board->getBoardSize(); j++) {
+                Board tempBoard(*board);
+                if (tempBoard.validInput(i, j)) {
+                    tempBoard.addMove(playerType, i, j);
+                    Node c(i, j, heuristic(board, playerType));
+                    moves.push(c);
+                }
             }
-            cout << endl;
+        }
 
-            if (!trackingNodes.empty() && trackingNodes[1] == boardSize - 1) {
-                return heuristicCost;
+        if (moves.size() > 0) {
+            x = moves.top().x;
+            y = moves.top().y;
+        } else {
+            cout << "Cannot find the new replacement";
+        }
+
+        cout << "Heuristic = " << moves.top().heuristic << " at (" << (x + 1) << "," << (y + 1) << ")" << endl;
+    }
+}
+
+double SimpleMindPlayer::heuristic(Board *board, int playerType) {
+    int boardSize = board->getBoardSize();
+    int connectCount = 0;
+
+    // White Player
+    if (playerType == -1) {
+        // White Player moves left to right
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (board->getGrid(i, j) == playerType) {
+                    connectCount += j;  // The more close to the right, the more better
+                    break;
+                }
+            }
+        }
+    } else { // Black Player
+        //  moves top to bottom
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (board->getGrid(i, j) == playerType) {
+                    connectCount += j;  // The more close to bottom, the more better
+                    break;
+                }
             }
         }
     }
-    return 0;
-}
-
-void SimpleMindPlayer::getBestMove(Board *board, Node& startNode, int &x, int &y) {
-    x = startNode.[heuristicCost].x;
-    y = getNode()[heuristicCost].y;
+    double heuristicValue = (double)(boardSize * boardSize - connectCount) / boardSize;
+    return heuristicValue;
 }
 
 bool SimpleMindPlayer::getMove(Board *board, int &x, int &y) {
@@ -94,7 +123,7 @@ bool SimpleMindPlayer::getMove(Board *board, int &x, int &y) {
 
     while (!flag) {
 
-        getBestMove(board, x, y);
+        getBestMove(&*board, x, y, board->getTurn());
         flag = board->validInput(x, y);
         if (flag == false)
             cout << "Invalid input! Please input again." << endl;

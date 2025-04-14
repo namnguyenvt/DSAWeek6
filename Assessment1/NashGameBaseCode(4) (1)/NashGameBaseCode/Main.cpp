@@ -55,7 +55,10 @@ int main() {
 		p2 = new RandomPlayer(-1, "Random (White)");
 	} else if (typePlayer == 3) {
 		p1 = new RandomPlayer(1, "Random (Black)");
-		p2 = new SimpleMindPlayer(-1, "SimpleMindBot (White");
+		p2 = new SimpleMindPlayer(-1, "SimpleMindBot (White)");
+	} else if (typePlayer == 4) {
+		p1 = new SimpleMindPlayer(1, "SimpleMindBot (Black)");
+		p2 = new SimpleMindPlayer(-1, "SimpleMindBot (White)");
 	}
 
 	NashGame game(board, p1, p2);
