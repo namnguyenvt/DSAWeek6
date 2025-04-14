@@ -16,6 +16,7 @@ using namespace std;
 #include "NashGame.h"
 #include "RandomPlayer.h"
 #include "SimpleMindPlayer.h"
+#include "MonteCarloPlayer.h"
 
 
 int main() {
