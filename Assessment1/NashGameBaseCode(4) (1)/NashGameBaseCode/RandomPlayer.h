@@ -14,7 +14,7 @@ using namespace std;
 
 class RandomPlayer: public Player {
 public:
-    RandomPlayer(int t, string name = "Human") :
+    RandomPlayer(int t, string name = "Random") :
             Player(t, name) {
     }
     bool getMove(Board*, int&, int&);

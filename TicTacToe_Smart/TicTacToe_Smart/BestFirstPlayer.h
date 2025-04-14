@@ -6,7 +6,7 @@
 #ifndef BESTFIRSTPLAYER_H_
 #define BESTFIRSTPLAYER_H_
 
-class BestFirstPlayer :public Player {
+class BestFirstPlayer; public Player {
 public:
 	BestFirstPlayer(char ps): Player(ps) {}
 

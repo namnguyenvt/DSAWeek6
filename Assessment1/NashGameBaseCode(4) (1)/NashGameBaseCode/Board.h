@@ -89,8 +89,6 @@ public:
 		return turn;
 	}
 
-
-
     // Assessment 1 - task 1
     bool isBoardFull();
 
@@ -236,29 +234,6 @@ int Board::checkWinningStatus(int playerType) {
 	}
 		return 0;
 	}
-
-// bool Board::dfs(bool** visited, int playerType, int x, int y) {
-// 	if (playerType == 1 && x == boardSize - 1) {
-// 		return true;
-// 	}
-// 	if (playerType == -1 && y == boardSize - 1) {
-// 		return true;
-// 	}
-//
-// 	visited[x][y] = true;
-//
-// 	for (int i = 0; i < boardSize; ++i) {
-// 		int nx = x + x[i];
-// 		int ny = y + y[i];
-//
-// 		if (nx >= 0 && ny >= 0 && nx < boardSize && ny < boardSize && !visited[nx][ny] && grid[nx][ny] == playerType) {
-// 			if (dfs(visited, boardSize, nx, ny, playerType)) {
-// 				return true;
-// 			}
-// 		}
-// 	}
-// }
-
 
 // Assessment 1 - task 1
 bool Board::isBoardFull() {
