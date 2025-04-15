@@ -126,6 +126,41 @@ void NashGame::play(int typePlayer) {
 			if(won == playerType)
 				cout << player[playerIndex]->getPlayerName() << " player wins!" << endl;
 		}
+
+		// Monte Carlo Player
+		if (typePlayer == 4) {
+			if (won) {
+				return;
+			}
+			isFull = board->isBoardFull();
+			if (isFull) {
+				cout << "The board is full, please try a new game";
+				return;
+			}
+
+			// Monte Carlo Player
+			playerType = board->getTurn();
+			playerIndex = (playerType == player[0]->getType()) ? 0 : 1;
+			x = -1;
+			y = -1;
+
+			if (!player[playerIndex]->getMove(board, x, y)) {
+				cout << "No available move" << endl;
+				return;
+			}
+
+			cout << player[playerIndex]->getPlayerName() << " plays " << " ("
+					<< x + 1 << ", " << y + 1 << "):" << endl;
+
+			if (!board->addMove(playerType, x, y))
+				return;
+
+			board->printBoard();
+			won = board->checkWinningStatus(playerType);
+			cout << "Player Win:" << won << endl;
+			if(won == playerType)
+				cout << player[playerIndex]->getPlayerName() << " player wins!" << endl;
+		}
 	}
 }
 

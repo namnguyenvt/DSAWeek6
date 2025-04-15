@@ -17,6 +17,7 @@ using namespace std;
 #include "RandomPlayer.h"
 #include "SimpleMindPlayer.h"
 #include "MonteCarloPlayer.h"
+#include "Node.h"
 
 
 int main() {
@@ -58,8 +59,11 @@ int main() {
 		p1 = new RandomPlayer(1, "Random (Black)");
 		p2 = new SimpleMindPlayer(-1, "SimpleMindBot (White)");
 	} else if (typePlayer == 4) {
-		p1 = new SimpleMindPlayer(1, "SimpleMindBot (Black)");
+		p1 = new SimpleMindPlayer(1, "MonteCarlo (Black)");
 		p2 = new SimpleMindPlayer(-1, "SimpleMindBot (White)");
+	} else if (typePlayer == 5) {
+		p1 = new SimpleMindPlayer(1, "MonteCarlo (Black)");
+		p2 = new HumanPlayer(-1, "Human (White)");
 	}
 
 	NashGame game(board, p1, p2);

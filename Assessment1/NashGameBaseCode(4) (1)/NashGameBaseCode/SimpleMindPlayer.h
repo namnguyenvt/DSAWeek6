@@ -7,24 +7,10 @@
 
 #include <iostream>
 #include <queue>
+#include "Node.h"
 #include "Board.h"
 
 using namespace std;
-
-struct Node {
-    int x;
-    int y;
-    double heuristic;
-    Node(int xx =-1, int yy =-1, double hh = 0):x(xx), y(yy), heuristic(hh){}
-
-    bool operator<(const Node& c) const {
-        return heuristic < c.heuristic;
-    }
-
-    bool operator==(const Node& c) {
-        return (x == c.x && y == c.y);
-    }
-};
 
 class SimpleMindPlayer: public Player {
 public:
